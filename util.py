@@ -1,30 +1,12 @@
-import dataclasses
-import logging
-
-logger = logging.getLogger(__name__)
-
-Sentence = str
-
-@dataclasses.dataclass(repr=True)
-class Article:
-    title: str
-    paragraphs: list[list[Sentence]]
-
-
-class NameFabric:
-    def __init__(self) -> None:
-        self._next_id = 0
-
-    def next_txt(self) -> str:
-        self._next_id += 1
-        return f'{self._next_id}.txt'
+from bs4 import Tag
+from streams import Stream
 
 
 def isquote(c: str) -> bool:
     return c in ('"', "'", '«', '»')
 
 
-def sentences(text: str) -> list[Sentence]:
+def sentences(text: str) -> list[str]:
     sentences = []
     begin_index = 0
     quote_opened = False
@@ -36,13 +18,43 @@ def sentences(text: str) -> list[Sentence]:
             quote_opened = not quote_opened
 
         if c2.isspace() and c1 == '.' and not quote_opened:
-            sentences.append(text[begin_index:i].strip())
+            if d := text[begin_index:i].strip():
+                sentences.append(d)
             begin_index = i + 1
 
     if begin_index != len(text) - 1:
-        sentences.append(text[begin_index:].strip())
+        if d := text[begin_index:].strip():
+            sentences.append(d)
 
     return sentences
+
+
+def paragraphs(tag: Tag | str, ignore_tags: list[str]) -> list[str]:
+    if isinstance(tag, str):
+        if (d := tag.strip()):
+            return [ d ]
+        else:
+            return []
+
+    is_text = False
+
+    for i in tag.children:
+        if isinstance(i, str) and i.strip():
+            is_text = True
+        elif i.name == 'p':
+            is_text = False
+            break
+
+    if is_text:
+        return Stream(tag.text.split('\n')) \
+                .map(str.strip)             \
+                .filter()                   \
+                .list()
+
+    return Stream(tag.children) \
+            .filter(lambda i: i.name not in ignore_tags)    \
+            .flat_map(lambda i: paragraphs(i, ignore_tags)) \
+            .list()
 
 
 ##### ================= #####
@@ -67,3 +79,6 @@ def test_sentences_5():
 
 def test_sentences_6():
     assert sentences('abc kek.ru. kek') == ['abc kek.ru', 'kek']
+
+def test_sentences_7():
+    assert sentences('.') == []

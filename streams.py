@@ -10,20 +10,17 @@ class Stream(Generic[T]):
         self._iter = iter(iter_)
 
 
-    def filter(self, f: Callable[[T], bool]) -> 'Stream[T]':
-        self._iter = (i for i in self._iter if f(i))
-        return self
+    def filter(self, f: Callable[[T], bool] = lambda i: i) -> 'Stream[T]':
+        return Stream(i for i in self._iter if f(i))
     
 
     def map(self, f: Callable[[T], U]) -> 'Stream[U]':
-        self._iter = (f(i) for i in self._iter)
-        return self
+        return Stream(f(i) for i in self._iter)
     
 
     def flat_map(self, f: Callable[[T], Iterable[U]]) -> 'Stream[U]':
         usual_map = (f(i) for i in self._iter)
-        self._iter = (j for i in usual_map for j in i)
-        return self
+        return Stream(j for i in usual_map for j in i)
     
 
     def reduce(self, start: U, f: Callable[[U, T], U]) -> U:
@@ -36,8 +33,7 @@ class Stream(Generic[T]):
     
 
     async def awaitAll(self: 'Stream[Coroutine[H, U, V]]') -> 'Stream[V]':
-        self._iter = (i for i in await gather(*self._iter))
-        return self
+        return Stream(i for i in await gather(*self._iter))
     
 
     def take(self, n: int) -> list[T]:
