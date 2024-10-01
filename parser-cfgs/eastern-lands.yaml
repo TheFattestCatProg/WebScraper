@@ -17,5 +17,4 @@ article:
   mode: article
   selector-title: 'h3.post-title.entry-title'
   selector-body: 'div.post-body.entry-content'
-  ignore: # tags to ignore
-  - table
+  ignore: [ table ]   # tags to ignore

@@ -18,9 +18,13 @@ arg_parser = ArgumentParser()
 arg_parser.add_argument('filename')
 
 
-def bad_rule(*args):
-    print("Bad rule: ", *args)
+def panic(*args):
+    print(*args)
     exit(1)
+
+
+def bad_rule(*args):
+    panic("Bad rule: ", *args)
 
 
 def load_yaml(path: str):
@@ -43,17 +47,23 @@ class YamlScrapper(ScrapperBase):
 
 
 async def route(scr: YamlScrapper, hp: HtmlParser, rule: str):
-    curr_cfg = scr.config[rule]
+    try:
+        curr_cfg = scr.config[rule]
+    except KeyError as e:
+        panic(f"Rule '{e.args[0]}' not found")
 
-    match curr_cfg['mode']:
-        case 'cyclic':
-            await mode_cyclic(scr, hp, curr_cfg['selector'], curr_cfg['goto'])
-        case 'hub':
-            await mode_hub(scr, hp, curr_cfg['selector'], curr_cfg['goto'])
-        case 'article':
-            await mode_article(scr, hp, curr_cfg['selector-title'], curr_cfg['selector-body'], curr_cfg['ignore'])
-        case r:
-            bad_rule(r)
+    try:
+        match curr_cfg['mode']:
+            case 'cyclic':
+                await mode_cyclic(scr, hp, curr_cfg['selector'], curr_cfg['goto'])
+            case 'hub':
+                await mode_hub(scr, hp, curr_cfg['selector'], curr_cfg['goto'])
+            case 'article':
+                await mode_article(scr, hp, curr_cfg['selector-title'], curr_cfg['selector-body'], curr_cfg['ignore'])
+            case r:
+                bad_rule(r, f'in rule {rule}')
+    except KeyError as e:
+        panic(f"Key '{e.args[0]}' not found in rule '{rule}'")
 
 
 async def mode_cyclic(scr: YamlScrapper, hp: HtmlParser, selector: str, goto: str):
