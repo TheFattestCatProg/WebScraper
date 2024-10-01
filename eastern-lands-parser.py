@@ -13,14 +13,6 @@ IGNORE_TAGS = ['table']
 logging.basicConfig(format='%(levelname)s %(name)s -> %(message)s', level=logging.DEBUG)
 
 
-# * Возможность добавлять парсеры для других сайтов с минимально возможной 
-# переработкой уже существующего кода.
-# * Возможность задавать параметры запуска с помощью файла 
-# конфигурации или аргументов командной строки
-# * Чистый код
-# * Приветствуется наличие модульных тестов
-
-
 class EasternLandsScrapper(ScrapperBase):
     async def scrap(self):
         await self.cyclic_a(await self.url_hp(URL), 'a.blog-pager-older-link', on_hub_page)

@@ -38,7 +38,7 @@ class ScrapperBase:
     
     
     async def save_article(self, a: Article):
-        save_article(self._name_fb, self._root_dir, a.title, a.pars)
+        await save_article(self._name_fb, self._root_dir, a.title, a.pars)
     
 
     async def save_articles(self, a: Stream[Article]):

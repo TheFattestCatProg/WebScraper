@@ -1,0 +1,21 @@
+main:
+  url: https://eastern-lands.blogspot.com/
+  dir: results/eastern-lands/
+  goto: cycle
+
+cycle:
+  mode: cyclic
+  selector: a.blog-pager-older-link
+  goto: hub-route
+
+hub-route:
+  mode: hub
+  selector: .post-title.entry-title > a
+  goto: article
+
+article:
+  mode: article
+  selector-title: 'h3.post-title.entry-title'
+  selector-body: 'div.post-body.entry-content'
+  ignore: # tags to ignore
+  - table

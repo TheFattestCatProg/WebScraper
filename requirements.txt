@@ -2,3 +2,4 @@ aiohttp
 aiofiles
 bs4
 pytest
+pyyaml
