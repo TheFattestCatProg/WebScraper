@@ -1,20 +1,21 @@
 main:
   url: https://eastern-lands.blogspot.com/
-  dir: results/eastern-lands/
-  goto: cycle
+  next: cycle
 
 cycle:
-  mode: cyclic
-  selector: a.blog-pager-older-link
-  goto: hub-route
+  mode: loop
+  sel: a.blog-pager-older-link
+  next: hub-route
 
 hub-route:
   mode: hub
-  selector: .post-title.entry-title > a
-  goto: article
+  sel: .post-title.entry-title > a
+  next: article
 
 article:
   mode: article
-  selector-title: 'h3.post-title.entry-title'
-  selector-body: 'div.post-body.entry-content'
+  sel-title: 'h3.post-title.entry-title'
+  sel-body: 'div.post-body.entry-content'
   ignore: [ table ]   # tags to ignore
+  dir: ./results/eastern-lands
+  # TODO: paragraph separating strategies
