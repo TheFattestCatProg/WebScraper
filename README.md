@@ -2,7 +2,19 @@
 This project provides single-threaded asynchronous scrapper which you can configure using yaml-files.
 Each yaml-file describes rules how to parse current web-resource.
 
-## Format
+## Requirements
+To install dependencies run:
+```bash
+pip install -r requirements.txt
+```
+
+## Run
+To run this program:
+```bash
+python webscrapper.py config.yaml
+```
+
+# Yaml Format
 Yaml-config consists of rules of the following format:
 ```yaml 
 rule-name:
@@ -18,8 +30,10 @@ main:
     next: next-rule
 ```
 Next rule means "I fetch this url and go to 'next-rule' with this data".
+It's like `main().next-rule().scrap()`, `array.map(..).filter(..)` in programming.
+
 In `modes.py` declared all mode this scrapper supports.
-**You can add your own modes**.
+**You could add your own modes**.
 
 ## Basic modes
 - `hub`:
@@ -61,16 +75,4 @@ In `modes.py` file you can easily describe your own parsing modes.
 API is easy so see code.
 
 Note that `"-"` in parameter names is replaced by `"_"` at code execution.
-So `param-one` in `modes.py` must be described as `param_one`.
-
-# Requirements
-To install dependencies run:
-```bash
-pip install -r requirements.txt
-```
-
-# Run
-To run this program:
-```bash
-python webscrapper.py config.yaml
-```
+So, `param-one` in `modes.py` must be described as `param_one`.
