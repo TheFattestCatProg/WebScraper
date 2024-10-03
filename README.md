@@ -1,5 +1,5 @@
 # Info
-This project provides single-threaded asynchronous scrapper which you can configure using yaml-files.
+This project provides single-threaded asynchronous scraper which you can configure using yaml-files.
 Each yaml-file describes rules how to parse current web-resource.
 
 ## Requirements
@@ -11,7 +11,7 @@ pip install -r requirements.txt
 ## Run
 To run this program:
 ```bash
-python webscrapper.py config.yaml
+python webscraper.py config.yaml
 ```
 
 # Yaml Format
@@ -57,7 +57,7 @@ In `modes.py` declared all mode this scrapper supports.
     ```
 
 - `article`:
-    This rule parses current page and saves in specified directory. Name of file is unique number. Format of saving: [title]\n[paragraphs separated by \n].
+    This rule parses current page and saves in specified directory. Name of file is unique number. Format of saving: `[title]\n[paragraphs separated by \n]`.
     Each sentence takes up a separate line. Sometimes it's buggy because of 
     stupid developers of websites.
     ```yaml
@@ -71,7 +71,7 @@ In `modes.py` declared all mode this scrapper supports.
     ```
 
 ## Your own modes
-In `modes.py` file you can easily describe your own parsing modes.
+In `modes.py` file you can easily describe your own processing modes.
 API is easy so see code.
 
 Note that `"-"` in parameter names is replaced by `"_"` at code execution.
